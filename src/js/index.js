@@ -1,5 +1,6 @@
 import { getUser } from "./services/user.js"
 import { getRepos } from "./services/repos.js"
+import { getEvents } from "./services/events.js"
 
 import { user } from "./objects/user.js"
 import { screen } from "./objects/screen.js"
@@ -37,21 +38,25 @@ function validateEmptyInput(userName) {
 async function getUserData(userName) {
 
     const userResponse = await getUser(userName)
-    console.log(userResponse)
 
-    if (userResponse.message === "API rate limit exceeded for 189.63.226.90. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)") {
+    if (userResponse.message === "Not Found") {
         screen.renderNotFound()
         return
     }
 
     const reposResponse = await getRepos(userName)
+    const eventsResponse = await getEvents(userName)
+
 
     user.setInfo(userResponse)
     user.setRepos(reposResponse)
+    user.setEvents(eventsResponse)
 
+    console.log(userResponse)
+    console.log(reposResponse)
+    console.log(eventsResponse)
 
     screen.renderUser(user)
 }
-
 
 
